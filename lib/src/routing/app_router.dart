@@ -17,8 +17,11 @@ import 'package:starter/src/routing/go_router_refresh_stream.dart';
 import 'package:starter/src/routing/scaffold_with_bottom_nav_bar.dart';
 
 part 'app_router.g.dart';
-
-// private navigators
+/*
+The app has private navigators, _rootNavigatorKey and _shellNavigatorKey, that
+allow for more control over the routing. It also has an enum called AppRoute,
+which defines all the routes available in the app.
+ */
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -37,7 +40,12 @@ enum AppRoute {
 }
 
 @riverpod
-// ignore: unsupported_provider_value
+//The goRouter provider is defined using the riverpod package, which provides
+//dependency injection for the app. It depends on two other providers:
+//authRepositoryProvider and onboardingRepositoryProvider.
+//The goRouter provider returns a GoRouter widget, which is the main widget
+//responsible for routing in the app. It has an initial location of /signIn,
+//which is the first screen the user will see when they open the app.
 GoRouter goRouter(GoRouterRef ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final onboardingRepository = ref.watch(onboardingRepositoryProvider);
@@ -45,6 +53,10 @@ GoRouter goRouter(GoRouterRef ref) {
     initialLocation: '/signIn',
     navigatorKey: _rootNavigatorKey,
     debugLogDiagnostics: true,
+//The GoRouter has a redirect function that determines which screen to show
+//based on the current state of the app. If the user has completed the
+//onboarding process, they will be redirected to the signIn screen. If they are
+//already signed in, they will be redirected to the jobs screen.
     redirect: (context, state) {
       final didCompleteOnboarding = onboardingRepository.isOnboardingComplete();
       if (!didCompleteOnboarding) {
@@ -69,6 +81,11 @@ GoRouter goRouter(GoRouterRef ref) {
       return null;
     },
     refreshListenable: GoRouterRefreshStream(authRepository.authStateChanges()),
+//The app has several routes, including the onboarding screen, the signIn
+// screen, the jobs screen, the addJob screen, the editJob screen, the entry
+// screen, the addEntry screen, the editEntry screen, the entries screen, and
+// the profile screen. Each screen is represented by a GoRoute widget that
+// defines the path, name, and page builder for the screen.
     routes: [
       GoRoute(
         path: '/onboarding',
@@ -86,6 +103,9 @@ GoRouter goRouter(GoRouterRef ref) {
           child: const CustomSignInScreen(),
         ),
       ),
+//The ShellRoute widget is used to define routes that should be displayed within
+// the ScaffoldWithBottomNavBar widget. This widget provides a bottom navigation
+// bar that allows the user to switch between different screens.
       ShellRoute(
         navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
@@ -113,7 +133,7 @@ GoRouter goRouter(GoRouterRef ref) {
                 },
               ),
               GoRoute(
-                path: ':id',
+                path: ':id',// the id part of the path can change dynamically
                 name: AppRoute.job.name,
                 pageBuilder: (context, state) {
                   final id = state.pathParameters['id']!;
@@ -139,7 +159,7 @@ GoRouter goRouter(GoRouterRef ref) {
                     },
                   ),
                   GoRoute(
-                    path: 'entries/:eid',
+                    path: 'entries/:eid',// the eid part of the path can change dynamically
                     name: AppRoute.entry.name,
                     pageBuilder: (context, state) {
                       final jobId = state.pathParameters['id']!;

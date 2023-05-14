@@ -7,6 +7,7 @@ import 'package:starter/src/features/authentication/domain/app_user.dart';
 import 'package:starter/src/features/entries/data/entries_repository.dart';
 import 'package:starter/src/features/entries/domain/entry.dart';
 import 'package:starter/src/features/jobs/domain/job.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 part 'jobs_repository.g.dart';
 
@@ -17,6 +18,11 @@ class JobsRepository {
   static String jobPath(String uid, String jobId) => 'users/$uid/jobs/$jobId';
   static String jobsPath(String uid) => 'users/$uid/jobs';
   static String entriesPath(String uid) => EntriesRepository.entriesPath(uid);
+  /////////////////////////////////////
+  //final int value;
+ // final StreamSubscription<String>? textStreamSubscription= ReceiveSharingIntent.getTextStream().listen((String value) {
+ // loadList(value);   });
+  /////////////////////////////////////
 
   // create
   Future<void> addJob(
